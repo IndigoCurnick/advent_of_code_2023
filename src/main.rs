@@ -5,6 +5,7 @@ use day3::day3;
 use day4::day4;
 use day5::day5;
 use day6::day6;
+use day7::day7;
 use std::{fs::File, io::Read};
 
 pub mod day1;
@@ -13,6 +14,7 @@ pub mod day3;
 pub mod day4;
 pub mod day5;
 pub mod day6;
+pub mod day7;
 
 #[derive(Parser)]
 #[command(
@@ -33,6 +35,7 @@ enum Day {
     Day4,
     Day5,
     Day6,
+    Day7,
 }
 
 fn main() {
@@ -46,6 +49,7 @@ fn main() {
         Day::Day4 => day4(),
         Day::Day5 => day5(),
         Day::Day6 => day6(),
+        Day::Day7 => day7(),
     }
 }
 
