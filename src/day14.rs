@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{collections::HashMap, fmt::Display};
 
 use crate::read_lines;
 
@@ -6,6 +6,8 @@ pub fn day14() {
     let path = "data/day14.txt";
     let sum = part1(path);
     println!("Day 14 Part 1: {}", sum);
+    let sum = part2(path);
+    println!("Day 14 Part 2: {}", sum);
 }
 
 fn part1(path: &str) -> usize {
@@ -47,79 +49,120 @@ fn part1(path: &str) -> usize {
     return sum;
 }
 
+const TOTAL_CYCLES: usize = 1_000_000_000;
+
+fn perform_cycle(parsed: &mut Vec<Vec<Ground>>) {
+    // North
+    for i in 0..parsed.len() {
+        for j in 0..parsed[0].len() {
+            let mut running = true;
+            let mut k = i;
+            while running {
+                let tmp = move_rock_north(parsed, k, j);
+
+                if tmp == k {
+                    running = false;
+                } else {
+                    k = tmp;
+                }
+            }
+        }
+    }
+
+    // West
+    for j in 0..parsed[0].len() {
+        for i in 0..parsed.len() {
+            let mut running = true;
+            let mut k = j;
+            while running {
+                let tmp = move_rock_west(parsed, i, k);
+
+                if tmp == k {
+                    running = false;
+                } else {
+                    k = tmp;
+                }
+            }
+        }
+    }
+
+    // South
+    for i in (0..parsed.len()).rev() {
+        for j in 0..parsed[0].len() {
+            let mut running = true;
+            let mut k = i;
+            while running {
+                let tmp = move_rock_south(parsed, k, j);
+
+                if tmp == k {
+                    running = false;
+                } else {
+                    k = tmp;
+                }
+            }
+        }
+    }
+
+    // East
+    for j in (0..parsed[0].len()).rev() {
+        for i in 0..parsed.len() {
+            let mut running = true;
+            let mut k = j;
+            while running {
+                let tmp = move_rock_east(parsed, i, k);
+
+                if tmp == k {
+                    running = false;
+                } else {
+                    k = tmp;
+                }
+            }
+        }
+    }
+}
+
 fn part2(path: &str) -> usize {
     let lines = read_lines(path);
 
     let mut parsed = parse_input(&lines);
-
+    let mut cache = HashMap::new();
     // MOVE ROCKS
-    for _ in 0..1_000_000_000 {
-        // North
-        for i in 0..parsed.len() {
-            for j in 0..parsed[0].len() {
-                let mut running = true;
-                let mut k = i;
-                while running {
-                    let tmp = move_rock_north(&mut parsed, k, j);
+    for cycle in 1..=TOTAL_CYCLES {
+        perform_cycle(&mut parsed);
 
-                    if tmp == k {
-                        running = false;
-                    } else {
-                        k = tmp;
-                    }
-                }
+        let hash = create_vec_id(&parsed);
+
+        if cache.contains_key(&hash) {
+            // We are in a cycle!!!!!
+            let current_cycle = cycle;
+            let previous_cycle_this_config = *cache.get(&hash).unwrap();
+
+            println!("Found cycle!");
+            println!("Current cycle is {}", current_cycle);
+            println!(
+                "Previous cycle with this num {}",
+                previous_cycle_this_config
+            );
+
+            let period = current_cycle - previous_cycle_this_config;
+
+            println!("Thus, the period is {}", period);
+
+            let length_through_period = (TOTAL_CYCLES - previous_cycle_this_config) % period;
+
+            println!(
+                "Therefore, we need to go this many cycles through the period {}",
+                length_through_period
+            );
+
+            // Need to do length_through_period cycles then get north weight
+            for _ in 0..length_through_period {
+                perform_cycle(&mut parsed);
             }
-        }
 
-        // West
-        for j in 0..parsed[0].len() {
-            for i in 0..parsed.len() {
-                let mut running = true;
-                let mut k = j;
-                while running {
-                    let tmp = move_rock_west(&mut parsed, i, k);
-
-                    if tmp == k {
-                        running = false;
-                    } else {
-                        k = tmp;
-                    }
-                }
-            }
-        }
-
-        // South
-        for i in (0..parsed.len()).rev() {
-            for j in 0..parsed[0].len() {
-                let mut running = true;
-                let mut k = i;
-                while running {
-                    let tmp = move_rock_south(&mut parsed, k, j);
-
-                    if tmp == k {
-                        running = false;
-                    } else {
-                        k = tmp;
-                    }
-                }
-            }
-        }
-
-        // East
-        for j in (0..parsed[0].len()).rev() {
-            for i in 0..parsed.len() {
-                let mut running = true;
-                let mut k = j;
-                while running {
-                    let tmp = move_rock_east(&mut parsed, i, k);
-
-                    if tmp == k {
-                        running = false;
-                    } else {
-                        k = tmp;
-                    }
-                }
-            }
+            break;
+        } else {
+            cache.insert(hash, cycle);
         }
     }
 
@@ -138,6 +181,19 @@ fn part2(path: &str) -> usize {
     }
 
     return sum;
+}
+
+fn create_vec_id(vec_chars: &[Vec<Ground>]) -> [u64; 157] {
+    // Encode the locations of the rounded rocks, assuming grid is 100x100 max.
+    //
+    // NOTE: `64 * 157 > 100 * 100`
+    let mut bits = [0; 157];
+    for (idx, obj) in vec_chars.iter().flatten().enumerate() {
+        if *obj == Ground::Movable {
+            bits[idx / 64] |= 1 << (idx % 64);
+        }
+    }
+    return bits;
 }
 
 fn move_rock_north(parsed: &mut Vec<Vec<Ground>>, i: usize, j: usize) -> usize {
