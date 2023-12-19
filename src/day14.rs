@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display};
+use std::{collections::HashMap, fmt::Display, time::Instant};
 
 use crate::read_lines;
 
@@ -6,8 +6,10 @@ pub fn day14() {
     let path = "data/day14.txt";
     let sum = part1(path);
     println!("Day 14 Part 1: {}", sum);
+    let now = Instant::now();
     let sum = part2(path);
-    println!("Day 14 Part 2: {}", sum);
+    let time = now.elapsed().as_millis();
+    println!("Day 14 Part 2: {} (took {}ms)", sum, time);
 }
 
 fn part1(path: &str) -> usize {
@@ -137,23 +139,9 @@ fn part2(path: &str) -> usize {
             let current_cycle = cycle;
             let previous_cycle_this_config = *cache.get(&hash).unwrap();
 
-            println!("Found cycle!");
-            println!("Current cycle is {}", current_cycle);
-            println!(
-                "Previous cycle with this num {}",
-                previous_cycle_this_config
-            );
-
             let period = current_cycle - previous_cycle_this_config;
 
-            println!("Thus, the period is {}", period);
-
             let length_through_period = (TOTAL_CYCLES - previous_cycle_this_config) % period;
-
-            println!(
-                "Therefore, we need to go this many cycles through the period {}",
-                length_through_period
-            );
 
             // Need to do length_through_period cycles then get north weight
             for _ in 0..length_through_period {
@@ -166,7 +154,7 @@ fn part2(path: &str) -> usize {
         }
     }
 
-    display(&parsed);
+    // display(&parsed);
 
     // load
 

@@ -8,13 +8,77 @@ fn part1(path: &str) -> i32 {
     let lines = read_lines(path);
 
     let (workflows, items) = parse_input(&lines);
+    let mut sum = 0;
+    for item in items {
+        if evaluate(&item, &workflows) {
+            println!("Accepted {:?}", item);
+            sum += item.total();
+        }
+    }
 
-    for item in items {}
-
-    todo!();
+    return sum;
 }
 
-fn evaluate(item: &Item, workflows: &HashMap<String, Vec<Condition>>) -> bool {}
+fn evaluate(item: &Item, workflows: &HashMap<String, Vec<Condition>>) -> bool {
+    // Returns true if accepted
+    let mut init = None;
+
+    for (k, v) in workflows.iter() {
+        if v[0].meets_condition(item) {
+            init = Some(k.clone());
+            break;
+        }
+    }
+
+    if init.is_none() {
+        panic!("Could not find initial for {:?}", item);
+    }
+
+    return evaluate_rec(item, workflows, init.unwrap());
+}
+
+fn evaluate_rec(
+    item: &Item,
+    workflows: &HashMap<String, Vec<Condition>>,
+    workflow: String,
+) -> bool {
+    // returns true if accepted
+    println!("Evaluating item {:?}", item);
+    println!("I'm on workflow {}", workflow);
+    let conditions = workflows.get(&workflow).unwrap();
+
+    let mut dest = None;
+
+    for condition in conditions {
+        println!("Looking at condition {:?}", condition);
+        let meets = condition.meets_condition(item);
+
+        println!("This item meets this condition {}", meets);
+
+        if meets && condition.dest == "A" {
+            return true;
+        }
+
+        if meets && condition.dest == "R" {
+            return false;
+        }
+
+        if !meets {
+            continue;
+        }
+
+        if meets {
+            dest = Some(condition.dest.clone());
+            break;
+        }
+    }
+
+    if dest.is_none() {
+        panic!("Unreachable code");
+    }
+
+    return evaluate_rec(item, workflows, dest.unwrap());
+}
 
 fn parse_input(lines: &Vec<String>) -> (HashMap<String, Vec<Condition>>, Vec<Item>) {
     let mut processing_rules = true;
@@ -77,6 +141,9 @@ fn parse_input(lines: &Vec<String>) -> (HashMap<String, Vec<Condition>>, Vec<Ite
         }
     }
 
+    println!("Here's the items {:?}", items);
+    println!("Here's the workflows {:?}", workflows);
+
     return (workflows, items);
 }
 
@@ -86,6 +153,7 @@ fn get_num(item: &str) -> i32 {
     return split[1].parse().unwrap();
 }
 
+#[derive(Debug)]
 struct Condition {
     pub property: Property,
     pub gt: bool,
@@ -118,16 +186,30 @@ impl Condition {
     }
 
     pub fn meets_condition(&self, item: &Item) -> bool {
+        let comp = match self.gt {
+            true => greater_than,
+            false => less_than,
+        };
+
         match self.property {
-            Property::ExtremelyCool => todo!(),
-            Property::Musical => todo!(),
-            Property::Aerodynamic => todo!(),
-            Property::Shiny => todo!(),
+            Property::ExtremelyCool => comp(item.x, self.value),
+            Property::Musical => comp(item.m, self.value),
+            Property::Aerodynamic => comp(item.a, self.value),
+            Property::Shiny => comp(item.s, self.value),
             Property::Any => return true,
         }
     }
 }
 
+fn greater_than(a: i32, b: i32) -> bool {
+    return a > b;
+}
+
+fn less_than(a: i32, b: i32) -> bool {
+    return a < b;
+}
+
+#[derive(Debug)]
 enum Property {
     ExtremelyCool,
     Musical,
@@ -152,9 +234,23 @@ impl From<&str> for Property {
     }
 }
 
+#[derive(Debug)]
 struct Item {
     pub x: i32,
     pub m: i32,
     pub a: i32,
     pub s: i32,
+}
+
+impl Item {
+    pub fn total(&self) -> i32 {
+        return self.x + self.m + self.a + self.s;
+    }
+}
+
+#[test]
+fn test_part1() {
+    let path = "data/day19_demo.txt";
+    let sum = part1(path);
+    assert_eq!(19114, sum);
 }
