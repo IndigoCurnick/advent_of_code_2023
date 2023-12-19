@@ -2,30 +2,112 @@ use std::collections::HashMap;
 
 use crate::read_lines;
 
-pub fn day19() {}
+pub fn day19() {
+    let path = "data/day19.txt";
+    let sum = part1(path);
+    println!("Day 19 Part 1 {}", sum);
+    let sum = part2(path);
+    println!("Day 19 Part 2 {}", sum);
+}
 
-fn part1(path: &str) -> i32 {
+fn part1(path: &str) -> i64 {
     let lines = read_lines(path);
 
-    let (workflows, items) = parse_input(&lines);
+    let (workflows, workflows_in_order, items) = parse_input(&lines);
     let mut sum = 0;
     for item in items {
-        if evaluate(&item, &workflows) {
+        if evaluate_rec(&item, &workflows, "in".to_string()) {
             println!("Accepted {:?}", item);
             sum += item.total();
+        } else {
+            println!("Rejected {:?}", item);
         }
     }
 
     return sum;
 }
 
-fn evaluate(item: &Item, workflows: &HashMap<String, Vec<Condition>>) -> bool {
+fn get_range_combination(ranges: &HashMap<char, [i64; 2]>) -> i64 {
+    let mut total = 1;
+    for (_, val) in ranges.iter() {
+        total *= val[1] - val[0] + 1;
+    }
+
+    return total;
+}
+
+fn part2(path: &str) -> i64 {
+    let lines = read_lines(path);
+    let (workflows, _, _) = parse_input(&lines);
+
+    let part_ranges: HashMap<char, [i64; 2]> = vec![
+        ('x', [1, 4000]),
+        ('m', [1, 4000]),
+        ('a', [1, 4000]),
+        ('s', [1, 4000]),
+    ]
+    .into_iter()
+    .collect();
+    let mut stack = vec![(part_ranges, "in".to_string())];
+    let mut ttl = 0;
+    while let Some((mut ranges, pipeline)) = stack.pop() {
+        if pipeline == "A" {
+            ttl += get_range_combination(&ranges);
+            continue;
+        } else if pipeline == "R" {
+            continue;
+        }
+
+        let conditions = workflows
+            .get(&pipeline)
+            .unwrap_or_else(|| panic!("Unknown pipeline {}", pipeline));
+        for condition in conditions {
+            println!("Assessing condition {:?}", condition);
+            if condition.dest == "A".to_string() && condition.property == Property::Any {
+                ttl += get_range_combination(&ranges);
+                continue;
+            } else if condition.dest == "R".to_string() && condition.property == Property::Any {
+                continue;
+            }
+
+            if condition.property == Property::Any {
+                stack.push((ranges, condition.dest.clone()));
+                break;
+            }
+
+            let a = condition.property.to_char();
+            let val = condition.value;
+            let vals = ranges.remove(&a).unwrap().clone();
+
+            let low = vals[0];
+            let high = vals[1];
+            let mut new_ranges = ranges.clone();
+
+            if condition.gt {
+                new_ranges.insert(a, [val + 1, high]);
+                ranges.insert(a, [low, val]);
+            } else {
+                new_ranges.insert(a, [low, val - 1]);
+                ranges.insert(a, [val, high]);
+            }
+            stack.push((new_ranges, condition.dest.clone()));
+        }
+    }
+
+    return ttl;
+}
+
+fn evaluate(
+    item: &Item,
+    workflows: &HashMap<String, Vec<Condition>>,
+    workflows_in_order: &Vec<String>,
+) -> bool {
     // Returns true if accepted
     let mut init = None;
 
-    for (k, v) in workflows.iter() {
-        if v[0].meets_condition(item) {
-            init = Some(k.clone());
+    for name in workflows_in_order {
+        if workflows.get(name).unwrap()[0].meets_condition(item) {
+            init = Some(name.clone());
             break;
         }
     }
@@ -80,10 +162,11 @@ fn evaluate_rec(
     return evaluate_rec(item, workflows, dest.unwrap());
 }
 
-fn parse_input(lines: &Vec<String>) -> (HashMap<String, Vec<Condition>>, Vec<Item>) {
+fn parse_input(lines: &Vec<String>) -> (HashMap<String, Vec<Condition>>, Vec<String>, Vec<Item>) {
     let mut processing_rules = true;
 
     let mut workflows: HashMap<String, Vec<Condition>> = HashMap::new();
+    let mut workflows_in_order: Vec<String> = vec![];
     let mut items = vec![];
 
     for line in lines {
@@ -104,11 +187,10 @@ fn parse_input(lines: &Vec<String>) -> (HashMap<String, Vec<Condition>>, Vec<Ite
             let mut conditions = vec![];
             for rule in rules_split {
                 if !rule.contains(":") {
-                    // TODO: Handle special end case
                     conditions.push(Condition {
                         property: Property::Any,
                         gt: true,
-                        value: i32::MIN,
+                        value: i64::MIN,
                         dest: rule.to_string(),
                     });
                     continue;
@@ -126,6 +208,7 @@ fn parse_input(lines: &Vec<String>) -> (HashMap<String, Vec<Condition>>, Vec<Ite
             }
 
             workflows.insert(name.to_string(), conditions);
+            workflows_in_order.push(name.to_string());
         } else {
             let mut item = line.clone();
 
@@ -144,10 +227,10 @@ fn parse_input(lines: &Vec<String>) -> (HashMap<String, Vec<Condition>>, Vec<Ite
     println!("Here's the items {:?}", items);
     println!("Here's the workflows {:?}", workflows);
 
-    return (workflows, items);
+    return (workflows, workflows_in_order, items);
 }
 
-fn get_num(item: &str) -> i32 {
+fn get_num(item: &str) -> i64 {
     let split: Vec<&str> = item.split("=").collect();
 
     return split[1].parse().unwrap();
@@ -157,7 +240,7 @@ fn get_num(item: &str) -> i32 {
 struct Condition {
     pub property: Property,
     pub gt: bool,
-    pub value: i32,
+    pub value: i64,
     pub dest: String,
 }
 
@@ -173,7 +256,7 @@ impl Condition {
 
         let property = Property::from(property);
 
-        let value = value.parse::<i32>().unwrap();
+        let value = value.parse::<i64>().unwrap();
 
         let dest = dest.to_string();
 
@@ -201,21 +284,33 @@ impl Condition {
     }
 }
 
-fn greater_than(a: i32, b: i32) -> bool {
+fn greater_than(a: i64, b: i64) -> bool {
     return a > b;
 }
 
-fn less_than(a: i32, b: i32) -> bool {
+fn less_than(a: i64, b: i64) -> bool {
     return a < b;
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum Property {
     ExtremelyCool,
     Musical,
     Aerodynamic,
     Shiny,
     Any,
+}
+
+impl Property {
+    pub fn to_char(&self) -> char {
+        return match self {
+            Property::ExtremelyCool => 'x',
+            Property::Musical => 'm',
+            Property::Aerodynamic => 'a',
+            Property::Shiny => 's',
+            Property::Any => panic!("Unreachable code"),
+        };
+    }
 }
 
 impl From<&str> for Property {
@@ -236,14 +331,14 @@ impl From<&str> for Property {
 
 #[derive(Debug)]
 struct Item {
-    pub x: i32,
-    pub m: i32,
-    pub a: i32,
-    pub s: i32,
+    pub x: i64,
+    pub m: i64,
+    pub a: i64,
+    pub s: i64,
 }
 
 impl Item {
-    pub fn total(&self) -> i32 {
+    pub fn total(&self) -> i64 {
         return self.x + self.m + self.a + self.s;
     }
 }
@@ -253,4 +348,11 @@ fn test_part1() {
     let path = "data/day19_demo.txt";
     let sum = part1(path);
     assert_eq!(19114, sum);
+}
+
+#[test]
+fn test_part2() {
+    let path = "data/day19_demo.txt";
+    let sum = part2(path);
+    assert_eq!(167409079868000, sum);
 }
