@@ -12,6 +12,7 @@ use day18::day18;
 use day19::day19;
 use day2::day2;
 use day20::day20;
+use day21::day21;
 use day3::day3;
 use day4::day4;
 use day5::day5;
@@ -34,6 +35,7 @@ pub mod day18;
 pub mod day19;
 pub mod day2;
 pub mod day20;
+pub mod day21;
 pub mod day3;
 pub mod day4;
 pub mod day5;
@@ -75,6 +77,7 @@ enum Day {
     Day18,
     Day19,
     Day20,
+    Day21,
 }
 
 fn main() {
@@ -102,6 +105,7 @@ fn main() {
         Day::Day18 => day18(),
         Day::Day19 => day19(),
         Day::Day20 => day20(),
+        Day::Day21 => day21(),
     }
 }
 
