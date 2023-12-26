@@ -126,14 +126,14 @@ fn possible_ways(
 
 #[test]
 fn test_part1() {
-    let path = "data/day12_demo.txt";
+    let path = "data_demo/day12_demo.txt";
     let sum = part1(path);
     assert_eq!(sum, 21);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day12_demo.txt";
+    let path = "data_demo/day12_demo.txt";
     let sum = part2(path);
     assert_eq!(sum, 525152);
 }

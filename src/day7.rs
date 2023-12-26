@@ -269,14 +269,14 @@ impl HandType {
 
 #[test]
 fn test_part1() {
-    let data = "data/day7_demo.txt";
+    let data = "data_demo/day7_demo.txt";
     let hand = part1(data);
     assert_eq!(hand, 6440);
 }
 
 #[test]
 fn test_part2() {
-    let data = "data/day7_demo.txt";
+    let data = "data_demo/day7_demo.txt";
     let hand = part2(data);
     assert_eq!(hand, 5905);
 }

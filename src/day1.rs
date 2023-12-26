@@ -119,14 +119,14 @@ fn part_two(path: &str) -> i32 {
 
 #[test]
 fn test_day1_part1() {
-    let file_path = "data/day1_part1_demo.txt";
+    let file_path = "data_demo/day1_part1_demo.txt";
     let sum = part_one(file_path);
     assert_eq!(sum, 142);
 }
 
 #[test]
 fn test_day1_part2() {
-    let file_path = "data/day1_part2_demo.txt";
+    let file_path = "data_demo/day1_part2_demo.txt";
     let sum = part_two(file_path);
     assert_eq!(sum, 281);
 }

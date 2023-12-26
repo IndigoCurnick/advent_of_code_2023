@@ -309,14 +309,14 @@ fn display_energised(energised: &Vec<(i32, i32, Direction)>, height: usize, widt
 
 #[test]
 fn test_part1() {
-    let path = "data/day16_demo.txt";
+    let path = "data_demo/day16_demo.txt";
     let energised = part1(path);
     assert_eq!(energised, 46);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day16_demo.txt";
+    let path = "data_demo/day16_demo.txt";
     let energised = part2(path);
     assert_eq!(energised, 51);
 }

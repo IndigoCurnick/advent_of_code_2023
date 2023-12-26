@@ -179,17 +179,17 @@ enum LR {
 
 #[test]
 fn test_part1() {
-    let data = "data/day8_demo1.txt";
+    let data = "data_demo/day8_demo1.txt";
     let count = part1(data);
     assert_eq!(count, 2);
-    let data = "data/day8_demo2.txt";
+    let data = "data_demo/day8_demo2.txt";
     let count = part1(data);
     assert_eq!(count, 6);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day8_demo3.txt";
+    let path = "data_demo/day8_demo3.txt";
     let count = part2(path);
     assert_eq!(count, 6);
 }

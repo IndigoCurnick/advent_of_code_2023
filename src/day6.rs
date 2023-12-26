@@ -105,14 +105,14 @@ fn calculate_distance(speed: i64, time: i64) -> i64 {
 
 #[test]
 fn test_part1() {
-    let path = "data/day6_demo.txt";
+    let path = "data_demo/day6_demo.txt";
     let product = part1(path);
     assert_eq!(product, 288);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day6_demo.txt";
+    let path = "data_demo/day6_demo.txt";
     let total = part2(path);
     assert_eq!(total, 71503);
 }

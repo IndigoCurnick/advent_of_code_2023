@@ -345,14 +345,14 @@ impl Item {
 
 #[test]
 fn test_part1() {
-    let path = "data/day19_demo.txt";
+    let path = "data_demo/day19_demo.txt";
     let sum = part1(path);
     assert_eq!(19114, sum);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day19_demo.txt";
+    let path = "data_demo/day19_demo.txt";
     let sum = part2(path);
     assert_eq!(167409079868000, sum);
 }

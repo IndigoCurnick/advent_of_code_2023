@@ -272,14 +272,14 @@ fn dijkstra_shortest_path(grid: &Vec<Vec<u32>>, max_step_limit: u8, min_step_lim
 
 #[test]
 fn test_part1() {
-    let path = "data/day17_demo.txt";
+    let path = "data_demo/day17_demo.txt";
     let heat = part1(path);
     assert_eq!(heat, 102);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day17_demo.txt";
+    let path = "data_demo/day17_demo.txt";
     let heat = part2(path);
     assert_eq!(heat, 94);
 }

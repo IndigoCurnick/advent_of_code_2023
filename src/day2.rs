@@ -149,7 +149,7 @@ fn is_possible(unit: &str, count: i32) -> bool {
 
 #[test]
 fn test_part1() {
-    let file_path = "data/day2_demo.txt";
+    let file_path = "data_demo/day2_demo.txt";
     let sum = part1(file_path);
     println!("Day 2 Part 1 Test Sum {}", sum);
     assert_eq!(sum, 8);
@@ -157,7 +157,7 @@ fn test_part1() {
 
 #[test]
 fn test_part2() {
-    let file_path = "data/day2_demo.txt";
+    let file_path = "data_demo/day2_demo.txt";
     let sum = part2(file_path);
     println!("Day 2 Part 2 Test Sum {}", sum);
     assert_eq!(sum, 2286);

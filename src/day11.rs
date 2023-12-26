@@ -270,14 +270,14 @@ fn is_every_element_void(line: &Vec<Universe>) -> bool {
 
 #[test]
 fn test_part1() {
-    let path = "data/day11_demo.txt";
+    let path = "data_demo/day11_demo.txt";
     let sum = part1(path);
     assert_eq!(sum, 374);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day11_demo.txt";
+    let path = "data_demo/day11_demo.txt";
     let sum = part2(path, 10);
     assert_eq!(sum, 1030);
     let sum = part2(path, 100);

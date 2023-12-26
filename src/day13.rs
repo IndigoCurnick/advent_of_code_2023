@@ -297,14 +297,14 @@ impl Display for Ground {
 
 #[test]
 fn test_part1() {
-    let path = "data/day13_demo.txt";
+    let path = "data_demo/day13_demo.txt";
     let sum = part1(path);
     assert_eq!(sum, 405);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day13_demo.txt";
+    let path = "data_demo/day13_demo.txt";
     let sum = part2(path);
     assert_eq!(sum, 400);
 }

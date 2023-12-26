@@ -247,14 +247,14 @@ impl From<&str> for Direction {
 
 #[test]
 fn test_part1() {
-    let path = "data/day18_demo.txt";
+    let path = "data_demo/day18_demo.txt";
     let count = part1(path);
     assert_eq!(62, count);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day18_demo.txt";
+    let path = "data_demo/day18_demo.txt";
     let count = part2(path);
     assert_eq!(952408144115, count);
 }

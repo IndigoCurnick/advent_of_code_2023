@@ -253,7 +253,7 @@ impl From<char> for Garden {
 
 #[test]
 fn test_part1() {
-    let path = "data/day21_demo.txt";
+    let path = "data_demo/day21_demo.txt";
     let count = part1(path, 6);
     assert_eq!(count, 16);
 }

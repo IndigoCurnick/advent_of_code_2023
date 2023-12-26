@@ -221,14 +221,14 @@ fn find_numbers(chars: &Vec<Vec<char>>, starting_points: &Vec<Coord>) -> Vec<i32
 
 #[test]
 fn test_part1() {
-    let file = "data/day3_demo.txt";
+    let file = "data_demo/day3_demo.txt";
     let sum = part1(file);
     assert_eq!(sum, 4361);
 }
 
 #[test]
 fn test_part2() {
-    let file = "data/day3_demo.txt";
+    let file = "data_demo/day3_demo.txt";
     let sum = part2(file);
     assert_eq!(sum, 467835);
 }

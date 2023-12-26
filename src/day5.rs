@@ -289,14 +289,14 @@ fn parse_seeds3(line: &str) -> Vec<i64> {
 
 #[test]
 fn test_part1() {
-    let path = "data/day5_demo.txt";
+    let path = "data_demo/day5_demo.txt";
     let lowest = part1(path);
     assert_eq!(lowest, 35);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day5_demo.txt";
+    let path = "data_demo/day5_demo.txt";
     let lowest = part2(path);
     assert_eq!(lowest, 46);
 }

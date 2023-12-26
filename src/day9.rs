@@ -128,7 +128,7 @@ fn parse_num_lines(lines: &Vec<String>) -> Vec<Vec<i64>> {
 
 #[test]
 fn test_part1() {
-    let path = "data/day9_demo.txt";
+    let path = "data_demo/day9_demo.txt";
     let sum = part1(path);
     assert_eq!(sum, 114)
 }
@@ -147,7 +147,7 @@ fn test_diff() {
 
 #[test]
 fn test_part2() {
-    let path = "data/day9_demo.txt";
+    let path = "data_demo/day9_demo.txt";
     let sum = part2(path);
     assert_eq!(sum, 2);
 }

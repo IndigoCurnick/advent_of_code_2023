@@ -322,14 +322,14 @@ impl Pipe {
 
 #[test]
 fn test_part1() {
-    let path = "data/day10_demo.txt";
+    let path = "data_demo/day10_demo.txt";
     let count = part1(path);
     assert_eq!(count, 8);
 }
 
 #[test]
 fn test_part2() {
-    let path = "data/day10_demo2.txt";
+    let path = "data_demo/day10_demo2.txt";
     let count = part2(path);
     assert_eq!(count, 10);
 }

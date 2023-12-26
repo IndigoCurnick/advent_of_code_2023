@@ -390,7 +390,7 @@ struct Message {
 
 #[test]
 fn test_part1() {
-    let path = "data/day20_demo.txt";
+    let path = "data_demo/day20_demo.txt";
     let mult = part1(path);
     assert_eq!(mult, 32000000);
 }
