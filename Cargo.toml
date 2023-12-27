@@ -10,3 +10,4 @@ clap = { version = "4.4.10", features = ["derive"] }
 rayon = "1.8.0"
 tokio = { version = "1.35.1", features = ["rt-multi-thread"] }
 peroxide = "0.34.3"
+rustworkx-core = "0.13.2"
